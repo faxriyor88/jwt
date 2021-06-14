@@ -11,6 +11,6 @@ import java.util.Optional;
 
 @RepositoryRestResource(path = "card",excerptProjection = CardCustom.class)
 public interface CardRepository extends JpaRepository<Card,Integer> {
- @Query(value = "select * from card where owner_id =(select user_id from auditing where token = ?1)",nativeQuery = true)
-    Optional<Card> getCardOwner_id(String token);
+    Optional<Card> findByOwner_Username(String owner_username);
+
 }

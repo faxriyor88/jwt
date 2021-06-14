@@ -8,12 +8,12 @@ import com.example.jwt.entity.OutCome;
 import com.example.jwt.repository.CardRepository;
 import com.example.jwt.repository.InComeRepository;
 import com.example.jwt.repository.OutComeRepository;
-import com.example.jwt.repository.AuditingRepository;
 import com.example.jwt.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,16 +26,13 @@ public class OutComeInComeService {
     InComeRepository inComeRepository;
     @Autowired
     CardRepository cardRepository;
-    @Autowired
-    AuditingRepository ttttttRepository;
 
-    public ApiResponse outComeWriter(OutComeDto outComeDto, HttpServletRequest httpServletRequest) {
-            String token = httpServletRequest.getHeader("Authorization");
-            token = token.substring(7);
-            Optional<Card> cardOwner_id = cardRepository.getCardOwner_id(token);
-            if (cardOwner_id.isPresent()) {
-                Card card = cardOwner_id.get();
-                if (card.getId() == outComeDto.getFromCard_id()) {
+    public ApiResponse outComeWriter(OutComeDto outComeDto) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<Card> optional = cardRepository.findByOwner_Username(user.getUsername());
+        if (optional.isPresent()) {
+            Card card= optional.get();
+                if (optional.get().getId() == outComeDto.getFromCard_id()) {
                     Optional<Card> optional1 = cardRepository.findById(outComeDto.getToCard_id());
                     if (optional1.isPresent()) {
                         double sum = outComeDto.getAmount();

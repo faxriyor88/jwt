@@ -1,6 +1,7 @@
 package com.example.jwt.jwtwriter;
 
 import com.example.jwt.service.MyAuthService;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.lang.reflect.Field;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
@@ -23,12 +25,12 @@ public class JwtFilter extends OncePerRequestFilter {
     @Autowired
     MyAuthService myAuthService;
 
+    @SneakyThrows
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest,
                                     HttpServletResponse httpServletResponse,
                                     FilterChain filterChain) throws ServletException, IOException {
         String token = httpServletRequest.getHeader("Authorization");
-
         if (token != null && token.startsWith("Bearer")) {
             token = token.substring(7);
             if (jwtProwider.validateToken(token)) {
@@ -38,7 +40,6 @@ public class JwtFilter extends OncePerRequestFilter {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-
             }
         }
         filterChain.doFilter(httpServletRequest, httpServletResponse);

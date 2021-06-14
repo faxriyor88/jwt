@@ -8,17 +8,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-
 @RestController
 @RequestMapping("/transfer")
 public class OutComeInComeController {
     @Autowired
     OutComeInComeService outComeInComeService;
-
     @PostMapping()
-    public ResponseEntity<ApiResponse> transfer(@RequestBody OutComeDto outComeDtom, HttpServletRequest request){
-        ApiResponse apiResponse = outComeInComeService.outComeWriter(outComeDtom,request);
+    public ResponseEntity<ApiResponse> transfer(@RequestBody OutComeDto outComeDto){
+        ApiResponse apiResponse = outComeInComeService.outComeWriter(outComeDto);
         if (apiResponse.isStatus()){
             return ResponseEntity.status(201).body(apiResponse);
         }else {
