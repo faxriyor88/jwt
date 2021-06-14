@@ -12,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "foydalanuvchi")
+@Table(name = "foydalanuvchi",uniqueConstraints = @UniqueConstraint(columnNames = {"username","password"}))
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
